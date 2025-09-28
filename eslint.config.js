@@ -1,17 +1,17 @@
-import tsParser from "@typescript-eslint/parser";
-import tsPlugin from "@typescript-eslint/eslint-plugin";
-import prettierPlugin from "eslint-plugin-prettier";
+const tsParser = require("@typescript-eslint/parser");
+const tsPlugin = require("@typescript-eslint/eslint-plugin");
+const prettierPlugin = require("eslint-plugin-prettier");
 
 /** @type {import('eslint').Linter.Config[]} */
-export default [
+module.exports = [
   {
     files: ["src/**/*.ts"],
     ignores: ["node_modules/**", "dist/**", ".env"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        ecmaVersion: 2016,
-        sourceType: "module",
+        ecmaVersion: "latest",
+        sourceType: "module", // CommonJS হলেও Node.js import/export ঠিকঠাক কাজ করবে
       },
       globals: {
         process: "readonly",
@@ -23,11 +23,11 @@ export default [
     },
     rules: {
       "@typescript-eslint/no-unused-vars": "error",
-      "prettier/prettier": ["error", { singleQuote: false, endOfLine: "lf" }],
+      "prettier/prettier": ["error", {}, { usePrettierrc: true }],
       "prefer-const": "error",
       "no-console": "warn",
       "no-unused-expressions": "error",
-      "no-undef": "error",
+      "no-undef": "off", // TS already checks undefined vars
     },
   },
 ];

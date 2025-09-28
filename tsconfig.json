@@ -5,7 +5,7 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "target": "ES2016",
-    "module": "ESNext",
+   "module": "CommonJS",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
