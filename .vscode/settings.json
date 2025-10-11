@@ -6,5 +6,7 @@
   "eslint.validate": ["typescript", "typescriptreact", "javascript"],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
-  }
+  },
+  "files.eol": "\n", // ✅ Always use LF line endings
+  "prettier.endOfLine": "lf" // ✅ Force Prettier to format with LF
 }

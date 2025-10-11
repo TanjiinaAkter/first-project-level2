@@ -12,4 +12,5 @@ router.post("/create-student", StudentController.createStudent);
 // router nijiei obj so {} er moddhe router export kori nai
 router.get("/", StudentController.getAllStudents);
 router.get("/:studentId", StudentController.getSingleStudent);
+router.delete("/:studentId", StudentController.deleteStudent);
 export const StudentRoutes = router;

@@ -23,7 +23,14 @@ module.exports = [
     },
     rules: {
       "@typescript-eslint/no-unused-vars": "error",
-      "prettier/prettier": ["error", {}, { usePrettierrc: true }],
+      "prettier/prettier": [
+        "error",
+        {
+          endOfLine: "lf", // force LF, fix ␍ eslint/prettier error
+        },
+        ,
+        { usePrettierrc: true },
+      ],
       "prefer-const": "error",
       "no-console": "warn",
       "no-unused-expressions": "error",
