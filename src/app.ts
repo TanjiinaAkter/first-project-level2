@@ -6,6 +6,7 @@ const app: Application = express();
 // const port = 3000;
 
 //PARSERS
+// amader code undefined ashbe karon parser na thakle dekha jabe na tai .json() use korbo
 app.use(express.json());
 app.use(cors());
 
