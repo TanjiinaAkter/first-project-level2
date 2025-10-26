@@ -1,4 +1,4 @@
-import { Schema, model, connect, Model } from "mongoose";
+import { Schema, model, connect, Model, Types } from "mongoose";
 
 // step:1 create interface
 
@@ -25,8 +25,9 @@ export type TUserName = {
 
 export type TStudent = {
   id: string;
+  // type hocche objectid type..kivabe bujhchi kar _id?? user service e user er id ta student.user e set kore dibo
+  user: Types.ObjectId;
   // -------------- pre and save middleware use (2) pre middleware use korar jonno password add kore niyechi--------------//
-  password: string;
   name: TUserName;
   gender: "male" | "female" | "other";
   dateOfBirth?: string;
@@ -39,7 +40,6 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImg?: string;
-  isActive: "active" | "block";
   isDeleted: boolean;
 };
 

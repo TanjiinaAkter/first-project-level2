@@ -7,8 +7,8 @@ import { StudentController } from "./student.controller";
 const router = express.Router();
 // will call controller function
 // client create-student e hit korbe post korar jonno
-
-router.post("/create-student", StudentController.createStudent);
+//========= create student post req is transfered to the user route =========//
+// router.post("/create-student", StudentController.createStudent);
 // router nijiei obj so {} er moddhe router export kori nai
 router.get("/", StudentController.getAllStudents);
 router.get("/:studentId", StudentController.getSingleStudent);

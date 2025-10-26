@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 // -------------- pre and save middleware use (5) password hash kore use korar jonno bycript import add kore niyechi--------------//
-import bycript from "bcrypt";
+
 import {
   TStudent,
   StudentMethods,
@@ -41,12 +41,14 @@ const LocalGuardianSchema = new Schema<TLocalGuardian>({
 const StudentSchema = new Schema<TStudent, StudentModel>(
   {
     id: { type: String, required: true, unique: true },
-    // -------------- pre and save middleware use (3) pre middleware use korar jonno password add kore niyechi--------------//
-    password: {
-      type: String,
-      required: true,
-      maxlength: [30, "pasword can npt be more than 20 characters"],
+    user: {
+      type: Schema.Types.ObjectId,
+      unique: true,
+      required: [true, "User id is required"],
+      ref: "User",
     },
+    // -------------- pre and save middleware use (3) pre middleware use korar jonno password add kore niyechi--------------//
+   
     name: { type: UserNameSchema, required: true },
     gender: { type: String, enum: ["male", "female", "other"], required: true },
     dateOfBirth: { type: String, required: false },
@@ -63,7 +65,6 @@ const StudentSchema = new Schema<TStudent, StudentModel>(
     guardian: { type: GuardianSchema, required: true },
     localGuardian: { type: LocalGuardianSchema, required: true },
     profileImg: { type: String, required: false },
-    isActive: { type: String, enum: ["active", "block"], required: true },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -76,31 +77,7 @@ const StudentSchema = new Schema<TStudent, StudentModel>(
   },
 );
 
-// -------------- pre and save middleware use (1) will work on create() or save()--------------//
-//pre hook
-StudentSchema.pre("save", async function (next) {
-  console.log(
-    this,
-    "pre hook :we will save tha data before that pre middleware function will work",
-  );
-  const user = this;
-  // -------------- pre and save middleware use (8) bycript pass from .env. and safe as user password, must nect() dite hobe karon middleware
-  user.password = await bycript.hash(
-    user.password,
-    Number(config.bycript_salt_rounds),
-  );
-  next();
-});
-//post hook --doc hocche amader updated document ta mane amder send kora data ta
-StudentSchema.post("save", function (doc, next) {
-  console.log(
-    this,
-    "after we saved our  post data on DB , post middleware/hooks will work",
-  );
-  // password save korar por seta empty kore dicchi এইটা postman মানে user password তা “ ” পাবে কিন্তু DB তে hash password save হবে
-  doc.password = "";
-  next();
-});
+
 // QUERY MIDDLEWARE -1
 StudentSchema.pre("find", function (next) {
   this.find({ isDeleted: { $ne: true } });
