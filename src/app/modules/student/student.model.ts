@@ -3,7 +3,7 @@ import { Schema, Types, model } from "mongoose";
 
 import {
   TStudent,
-  StudentMethods,
+  // StudentMethods,
   StudentModel,
   TGuardian,
   TLocalGuardian,
