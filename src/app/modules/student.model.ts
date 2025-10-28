@@ -13,34 +13,49 @@ import config from "../config";
 
 // Step 2: Create Schema
 
-const UserNameSchema = new Schema<TUserName>({
-  firstName: { type: String, required: true },
-  middleName: { type: String }, // 💡 Ensure 'required: false' is NOT explicitly set, or omitted entirely for optionality
-  lastName: { type: String, required: true },
-});
+const UserNameSchema = new Schema<TUserName>(
+  {
+    firstName: { type: String, required: true },
+    middleName: { type: String }, // 💡 Ensure 'required: false' is NOT explicitly set, or omitted entirely for optionality
+    lastName: { type: String, required: true },
+  },
+  {
+    _id: false,
+  },
+);
 
-const GuardianSchema = new Schema<TGuardian>({
-  fatherName: { type: String, required: true },
-  fatherOccupation: { type: String, required: true },
-  fatherContactNo: { type: String, required: true },
-  motherName: { type: String, required: true },
-  motherOccupation: { type: String, required: true },
-  motherContactNo: { type: String, required: true },
-});
+const GuardianSchema = new Schema<TGuardian>(
+  {
+    fatherName: { type: String, required: true },
+    fatherOccupation: { type: String, required: true },
+    fatherContactNo: { type: String, required: true },
+    motherName: { type: String, required: true },
+    motherOccupation: { type: String, required: true },
+    motherContactNo: { type: String, required: true },
+  },
+  {
+    _id: false,
+  },
+);
 
-const LocalGuardianSchema = new Schema<TLocalGuardian>({
-  name: { type: String, required: true },
-  occupation: { type: String, required: true },
-  contactNo: { type: String, required: true },
-  address: { type: String, required: true },
-});
+const LocalGuardianSchema = new Schema<TLocalGuardian>(
+  {
+    name: { type: String, required: true },
+    occupation: { type: String, required: true },
+    contactNo: { type: String, required: true },
+    address: { type: String, required: true },
+  },
+  {
+    _id: false,
+  },
+);
 // custom instance method -3 interface er methods gula import kore ekhane dibo
 // ============================================//
 // --------------  static method(2)  import StudentModel--------------
 // ============================================//
 const StudentSchema = new Schema<TStudent, StudentModel>(
   {
-    id: { type: String, required: true, unique: true },
+    //id: { type: String, required: true, unique: true },
     user: {
       type: Schema.Types.ObjectId,
       unique: true,
@@ -48,7 +63,7 @@ const StudentSchema = new Schema<TStudent, StudentModel>(
       ref: "User",
     },
     // -------------- pre and save middleware use (3) pre middleware use korar jonno password add kore niyechi--------------//
-   
+
     name: { type: UserNameSchema, required: true },
     gender: { type: String, enum: ["male", "female", "other"], required: true },
     dateOfBirth: { type: String, required: false },
@@ -65,10 +80,10 @@ const StudentSchema = new Schema<TStudent, StudentModel>(
     guardian: { type: GuardianSchema, required: true },
     localGuardian: { type: LocalGuardianSchema, required: true },
     profileImg: { type: String, required: false },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
+    // isDeleted: {
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
   {
     toJSON: {
@@ -76,7 +91,6 @@ const StudentSchema = new Schema<TStudent, StudentModel>(
     },
   },
 );
-
 
 // QUERY MIDDLEWARE -1
 StudentSchema.pre("find", function (next) {
