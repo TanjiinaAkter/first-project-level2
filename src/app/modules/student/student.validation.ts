@@ -27,14 +27,14 @@ const localGuardianValidationSchema = z.object({
 // Main Student schema
 
 export const createStudentValidationSchema = z.object({
- // id: z.string().min(1, "ID is required"),
+  // id: z.string().min(1, "ID is required"),
   // -------------- pre and save middleware use (4) pre middleware use korar jonno password add kore niyechi--------------//
   body: z.object({
     password: z.string().max(20, "password is required"),
     student: z.object({
       name: UserNameValidationSchema,
       gender: z.enum(["male", "female", "other"]),
-      dateOfBirth: z.string().optional(),
+      dateOfBirth:z.coerce.date().optional(),
       email: z
         .string()
         .min(1, { message: "Email is required" })

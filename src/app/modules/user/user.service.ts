@@ -1,5 +1,5 @@
 import config from "../../config";
-import { Student } from "../student.model";
+import { Student } from "../student/student.model";
 import { TStudent } from "../student/student.interface";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";

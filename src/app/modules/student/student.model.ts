@@ -8,8 +8,8 @@ import {
   TGuardian,
   TLocalGuardian,
   TUserName,
-} from "./student/student.interface";
-import config from "../config";
+} from "../student/student.interface";
+import config from "../../config/index";
 
 // Step 2: Create Schema
 
@@ -66,7 +66,7 @@ const StudentSchema = new Schema<TStudent, StudentModel>(
 
     name: { type: UserNameSchema, required: true },
     gender: { type: String, enum: ["male", "female", "other"], required: true },
-    dateOfBirth: { type: String, required: false },
+    dateOfBirth: { type: Date, required: false },
     email: { type: String, required: true, unique: true },
     contactNo: { type: String, required: true },
     emergencyContactNo: { type: String, required: true },

@@ -30,7 +30,7 @@ export type TStudent = {
   // -------------- pre and save middleware use (2) pre middleware use korar jonno password add kore niyechi--------------//
   name: TUserName;
   gender: "male" | "female" | "other";
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
   email: string;
   contactNo: string;
   emergencyContactNo: string;

@@ -1,5 +1,5 @@
-import { Student } from "../student.model";
 import { TStudent } from "./student.interface";
+import { Student } from "./student.model";
 // amader student interface niye ashlam student: Student diye , good practice for big projects
 // const createStudentIntoDB = async (studentData: TStudent) => {
 //   // ============================================//
