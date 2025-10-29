@@ -21,3 +21,8 @@ export type TAcademicSemester = {
   startMonth: TMonths;
   endMonth: TMonths;
 };
+// service.ts er code eita::: defining semester code before creating to avoid duplicate insert of semester
+// type define (type alias)
+export type TAcademicSemesterCodeMapper = {
+  [key: string]: string;
+};
