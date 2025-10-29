@@ -26,7 +26,7 @@ const getAllAcademicSemesterFromDB = async () => {
   return result;
 };
 const getASigleSemesterFromDB = async (semesterid: string) => {
-  const result = await AcademicSemester.findById({ _id: semesterid });
+  const result = await AcademicSemester.findById(semesterid);
   if (!result) {
     throw new Error("Semester id not found");
   }
@@ -36,6 +36,13 @@ const updateASingleSemesterInDB = async (
   semesterid: string,
   updatedDoc: Partial<TAcademicSemester>,
 ) => {
+  if (
+    updatedDoc.name &&
+    updatedDoc.code &&
+    academicSemesterNameCodeMapper[updatedDoc.name] !== updatedDoc.code
+  ) {
+    throw new Error("Semester not found with this ID");
+  }
   const result = await AcademicSemester.findByIdAndUpdate(
     // direct internally _id diye ber kore
     semesterid,
@@ -43,9 +50,6 @@ const updateASingleSemesterInDB = async (
     { new: true },
   );
 
-  if (!result) {
-    throw new Error("Semester not found with this ID");
-  }
   return result;
 };
 export const AcademicSemesterServices = {
