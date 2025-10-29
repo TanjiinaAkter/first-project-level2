@@ -14,7 +14,12 @@ const createAcademicSemesterValidationSchema = z.object({
     endMonth: z.enum([...Months] as [string, ...string[]]),
   }),
 });
+// const getSingleAcademicSemesterValidationSchema = z.object({
+//   body: z.object({
 
+//   }),
+// });
 export const AcademicSemesterValidation = {
   createAcademicSemesterValidationSchema,
+  // getSingleAcademicSemesterValidationSchema,
 };

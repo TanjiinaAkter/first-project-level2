@@ -21,7 +21,36 @@ const createAcademicSemesterIntoDB = async (payLoad: TAcademicSemester) => {
   const result = await AcademicSemester.create(payLoad);
   return result;
 };
+const getAllAcademicSemesterFromDB = async () => {
+  const result = await AcademicSemester.find();
+  return result;
+};
+const getASigleSemesterFromDB = async (semesterid: string) => {
+  const result = await AcademicSemester.findById({ _id: semesterid });
+  if (!result) {
+    throw new Error("Semester id not found");
+  }
+  return result;
+};
+const updateASingleSemesterInDB = async (
+  semesterid: string,
+  updatedDoc: Partial<TAcademicSemester>,
+) => {
+  const result = await AcademicSemester.findByIdAndUpdate(
+    // direct internally _id diye ber kore
+    semesterid,
+    updatedDoc,
+    { new: true },
+  );
 
+  if (!result) {
+    throw new Error("Semester not found with this ID");
+  }
+  return result;
+};
 export const AcademicSemesterServices = {
   createAcademicSemesterIntoDB,
+  getAllAcademicSemesterFromDB,
+  getASigleSemesterFromDB,
+  updateASingleSemesterInDB,
 };
