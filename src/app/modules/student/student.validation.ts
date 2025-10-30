@@ -35,7 +35,7 @@ export const createStudentValidationSchema = z.object({
       name: UserNameValidationSchema,
       gender: z.enum(["male", "female", "other"]),
       // ek type ke onno type e  convert kora
-      dateOfBirth: z.coerce.date().optional(),
+      dateOfBirth: z.string().optional(),
       email: z
         .string()
         .min(1, { message: "Email is required" })
