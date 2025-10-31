@@ -21,7 +21,7 @@ const createStudentIntoDB = async (password: string, payLoad: TStudent) => {
   if (!admissionSemester) {
     throw new Error("Admission semester not found");
   }
-  // set manually generated id
+  // set manually generated id (Academic semester data nicchi props a)
   userData.id = await generateStudentId(admissionSemester);
   // create a user
   const newUser = await User.create(userData);
