@@ -5,6 +5,8 @@ import { TUser } from "./user.interface";
 import { User } from "./user.model";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { generateStudentId } from "./user.utils";
+import AppError from "../../errors/AppErrors";
+import status from "http-status";
 
 const createStudentIntoDB = async (password: string, payLoad: TStudent) => {
   // user obj create korar jonno partially jei property value lagbe seta get korte use hocche Partial
@@ -19,7 +21,7 @@ const createStudentIntoDB = async (password: string, payLoad: TStudent) => {
     payLoad.admissionSemester,
   );
   if (!admissionSemester) {
-    throw new Error("Admission semester not found");
+    throw new AppError(status.NOT_FOUND,"Admission semester not found");
   }
   // set manually generated id (Academic semester data nicchi props a)
   userData.id = await generateStudentId(admissionSemester);

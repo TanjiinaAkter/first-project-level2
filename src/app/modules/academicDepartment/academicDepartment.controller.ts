@@ -3,6 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { AcademicDepartmentServices } from "./academicDepartment.service";
 import { Error } from "mongoose";
+import AppError from "../../errors/AppErrors";
 
 const createAcademicDepartment = catchAsync(async (req, res) => {
   const result =
@@ -29,7 +30,7 @@ const getASingleAcademicDepartment = catchAsync(async (req, res) => {
   const { departmentId } = req.params;
 
   if (!departmentId) {
-    throw new Error("DEPARTMENT id required");
+    throw new AppError(status.NOT_FOUND, "DEPARTMENT id required");
   }
   const result =
     await AcademicDepartmentServices.getASingleAcademicDepartmentFromDB(
@@ -45,7 +46,7 @@ const getASingleAcademicDepartment = catchAsync(async (req, res) => {
 const updateAcademicDepartment = catchAsync(async (req, res) => {
   const { departmentId } = req.params;
   if (!departmentId) {
-    throw new Error(" department id is required");
+    throw new AppError(status.NOT_FOUND, " department id is required");
   }
   const result =
     await AcademicDepartmentServices.updateASingleAcademicDepartmentIntoDB(

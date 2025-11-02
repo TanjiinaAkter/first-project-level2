@@ -6,7 +6,7 @@ import { Student } from "./student.model";
 //   // --------------  static method(4)   static method--------------
 //   // ============================================//
 //   if (await Student.isUserExists(studentData.id)) {
-//     throw new Error("User already exists!");
+//     throw new AppError("User already exists!");
 //   }
 
 //   // create function diye data create korar function likhechi
@@ -19,7 +19,7 @@ import { Student } from "./student.model";
 //   // const student = new Student(studentData);
 //   // custom instance method -7 jodi existed user thake then error dibe (ekhane studenttData.id diyechi karon isUserExistes ekta function)noyto amader banano custom instance ta call kore save() kore dibo ...error msg controller e peete controller e jabo
 //   // if (await student.isUserExists(studentData.id)) {
-//   //   throw new Error("Student already exists");
+//   //   throw new AppError("Student already exists");
 //   // }
 
 //   // built-in instance method-step-2 :Saves this document using save() instance property by inserting a new document into the database
@@ -28,17 +28,29 @@ import { Student } from "./student.model";
 //   return result;
 //   // result return korle controller e chole jabe a
 // };
-
 const getAllStudentsFromDB = async () => {
-  const result = await Student.find();
+  const result = await Student.find()
+    .populate("admissionSemester")
+    .populate({
+      path: "academicDepartment",
+      populate: {
+        path: "academicFaculty",
+      },
+    });
   return result;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  // const result = await Student.findOne({
-  //   id,
-  // });
-  const result = await Student.aggregate([{ $match: { id: id } }]);
+  const result = await Student.findById(id)
+    .populate("admissionSemester")
+    .populate({
+      path: "academicDepartment",
+      populate: {
+        path: "academicFaculty",
+      },
+    });
+
+  //option2: const result = await Student.aggregate([{ $match: { id: id } }]);
   return result;
 };
 const deleteStudentFromDB = async (id: string) => {

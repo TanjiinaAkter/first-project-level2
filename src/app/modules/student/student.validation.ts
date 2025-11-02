@@ -57,6 +57,7 @@ export const createStudentValidationSchema = z.object({
       localGuardian: localGuardianValidationSchema,
       admissionSemester: z.string(),
       profileImg: z.string().optional(),
+      academicDepartment: z.string(),
     }),
   }),
   // isActive: z.enum(["active", "block"]).default("active"),
