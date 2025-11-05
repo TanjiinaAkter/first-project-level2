@@ -90,7 +90,7 @@ const getSingleStudent = catchAsync(async (req, res, next) => {
   });
 });
 // delete a single STUDENT
-const deleteStudent: RequestHandler = catchAsync(async (req, res, next) => {
+const deleteStudent: RequestHandler = catchAsync(async (req, res) => {
   const { studentId } = req.params;
   if (!studentId) {
     return res

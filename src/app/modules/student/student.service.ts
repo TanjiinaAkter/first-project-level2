@@ -1,5 +1,9 @@
+import mongoose from "mongoose";
 import { TStudent } from "./student.interface";
 import { Student } from "./student.model";
+import AppError from "../../errors/AppErrors";
+import status from "http-status";
+import { User } from "../user/user.model";
 // amader student interface niye ashlam student: Student diye , good practice for big projects
 // const createStudentIntoDB = async (studentData: TStudent) => {
 //   // ============================================//
@@ -41,7 +45,7 @@ const getAllStudentsFromDB = async () => {
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await Student.findById(id)
+  const result = await Student.findOne({id})
     .populate("admissionSemester")
     .populate({
       path: "academicDepartment",
@@ -53,9 +57,38 @@ const getSingleStudentFromDB = async (id: string) => {
   //option2: const result = await Student.aggregate([{ $match: { id: id } }]);
   return result;
 };
+
 const deleteStudentFromDB = async (id: string) => {
-  const result = await Student.updateOne({ id }, { isDeleted: true });
-  return result;
+  const session = await mongoose.startSession();
+  try { 
+    session.startTransaction();
+    // session-update...... amader custom id diye delete operation korbo tai findOneAndUpdate use hobe noyto updateOne dilei hoto
+    const deletedStudent = await Student.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session },
+    );
+    if (!deletedStudent) {
+      throw new AppError(
+        status.BAD_REQUEST,
+        "Failed to delete student and user",
+      );
+    }
+    const deletedUser = await User.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session },
+    );
+    if (!deletedUser) {
+      throw new AppError(status.BAD_REQUEST, "Failed to delete user and user");
+    }
+    await session.commitTransaction();
+    await session.endSession();
+    return deletedStudent;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+  }
 };
 export const StudentServices = {
   getAllStudentsFromDB,

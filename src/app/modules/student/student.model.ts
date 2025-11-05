@@ -10,6 +10,8 @@ import {
   TUserName,
 } from "../student/student.interface";
 import config from "../../config/index";
+import AppError from "../../errors/AppErrors";
+import status from "http-status";
 
 // Step 2: Create Schema
 
@@ -135,6 +137,19 @@ StudentSchema.statics.isUserExists = async function (id: string) {
 StudentSchema.virtual("fullName").get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
+// for delete a student first we are checking student id
+// StudentSchema.pre("save", async function (next) {
+//   const studentExistenceCheckForDelete = await Student.findOne({
+//     id: this.id,
+//     isDeleted: false,
+//   });
+//    console.log("Student existence check:", studentExistenceCheckForDelete);
+//   if (studentExistenceCheckForDelete) {
+//     throw new AppError(status.BAD_REQUEST, "student id not found in schema ");
+//   }
+//   next();
+// });
+
 
 // Step 3: Create Model
 // custom instance method -5 ekhnane amra StudentModel ta send korre dibo..bakita service.ts a kaj
