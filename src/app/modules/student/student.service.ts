@@ -45,7 +45,7 @@ const getAllStudentsFromDB = async () => {
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await Student.findOne({id})
+  const result = await Student.findOne({ id })
     .populate("admissionSemester")
     .populate({
       path: "academicDepartment",
@@ -57,10 +57,19 @@ const getSingleStudentFromDB = async (id: string) => {
   //option2: const result = await Student.aggregate([{ $match: { id: id } }]);
   return result;
 };
+const updateStudentFromDB = async (
+  studentId: string,
+  payLoad: Partial<TStudent>,
+) => {
+  const result = await Student.findOneAndUpdate({ id: studentId }, payLoad, {
+    new: true,
+  });
 
+  return result;
+};
 const deleteStudentFromDB = async (id: string) => {
   const session = await mongoose.startSession();
-  try { 
+  try {
     session.startTransaction();
     // session-update...... amader custom id diye delete operation korbo tai findOneAndUpdate use hobe noyto updateOne dilei hoto
     const deletedStudent = await Student.findOneAndUpdate(
@@ -93,5 +102,6 @@ const deleteStudentFromDB = async (id: string) => {
 export const StudentServices = {
   getAllStudentsFromDB,
   getSingleStudentFromDB,
+  updateStudentFromDB,
   deleteStudentFromDB,
 };
