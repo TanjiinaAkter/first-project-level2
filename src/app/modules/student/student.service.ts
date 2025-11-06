@@ -63,8 +63,9 @@ const updateStudentFromDB = async (
   studentId: string,
   payLoad: Partial<TStudent>,
 ) => {
-  // handle to update non premitive data
+  // handle to update non premitive data.. specific properties to be extracted,remain will be kept under remainingStudentData
   const { name, guardian, localGuardian, ...remainingStudentData } = payLoad;
+  // new obj create kortesi jar moddhe only remainingStudentData er property thakbe ar Record<> er kaj hocche key gulo hobe string type ar value unknown
   const modifiedUpdatedData: Record<string, unknown> = {
     ...remainingStudentData,
   };
