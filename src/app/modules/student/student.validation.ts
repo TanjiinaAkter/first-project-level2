@@ -100,7 +100,7 @@ export const updateStudentValidationSchema = z.object({
   body: z.object({
     // password: z.string().max(20, "password is required"),
     student: z.object({
-      name: updateUserNameValidationSchema,
+      name: updateUserNameValidationSchema.optional(),
       gender: z.enum(["male", "female", "other"]).optional(),
       // ek type ke onno type e  convert kora
       dateOfBirth: z.string().optional(),
