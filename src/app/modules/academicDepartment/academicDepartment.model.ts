@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 import { TAcademicDepertment } from "./academicDepartment.interface";
 import AppError from "../../errors/AppErrors";
 import status from "http-status";
-
+import mongoose from "mongoose";
 const academicDepartmentSchema = new Schema<TAcademicDepertment>(
   {
     name: { type: String, unique: true, required: true },
@@ -29,8 +29,6 @@ academicDepartmentSchema.pre("save", async function (next) {
   next();
 });
 // Checking if department id doesn't exists (before updating a department)
-import mongoose from "mongoose";
-
 academicDepartmentSchema.pre("findOneAndUpdate", async function (next) {
   const query = this.getQuery();
   console.log(query);
