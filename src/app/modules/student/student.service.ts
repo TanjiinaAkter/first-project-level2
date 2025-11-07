@@ -74,6 +74,7 @@ const updateStudentFromDB = async (
       modifiedUpdatedData[`name.${key}`] = value;
     }
   }
+
   console.log(modifiedUpdatedData);
   if (guardian && Object.keys(guardian).length) {
     for (const [key, value] of Object.entries(guardian)) {
