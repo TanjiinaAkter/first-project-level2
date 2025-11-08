@@ -3,7 +3,9 @@ import { ZodError } from "zod";
 import config from "../config";
 import { TErrorSource } from "../interface/error";
 import handleZodError from "../errors/handleZodError";
-import handleValidationError from "../errors/validationError";
+import handleValidationError from "../errors/handleValidationError";
+import handleCastError from "../errors/handleCastError";
+import handleDuplicateError from "../errors/handleDuplicateError";
 
 const globalErrorHandler = (
   err: any,
@@ -11,7 +13,7 @@ const globalErrorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  // setting default values
+  // setting default values ..status code pacchi amra AppError class theke custom create kore noyto only messgae provide hoto mongoose Error e
   let statusCode = err.statusCode || 500;
   let message = err.message || "Something went wrong global error";
   // this type is a array type, which each elements will be a obj
@@ -37,11 +39,21 @@ const globalErrorHandler = (
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
+  } else if (err?.name === "CastError") {
+    const simplifiedError = handleCastError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  } else if (err?.code === 11000) {
+    const simplifiedError = handleDuplicateError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
   }
   return res.status(statusCode).json({
     success: false,
     message,
-    // err,
+    err,
     errorSources,
     stack: config.NODE_ENV === "development" ? err?.stack : null,
   });
