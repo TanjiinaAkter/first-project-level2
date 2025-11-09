@@ -6,6 +6,7 @@ import handleZodError from "../errors/handleZodError";
 import handleValidationError from "../errors/handleValidationError";
 import handleCastError from "../errors/handleCastError";
 import handleDuplicateError from "../errors/handleDuplicateError";
+import AppError from "../errors/AppErrors";
 
 const globalErrorHandler = (
   err: any,
@@ -14,8 +15,8 @@ const globalErrorHandler = (
   next: NextFunction,
 ) => {
   // setting default values ..status code pacchi amra AppError class theke custom create kore noyto only messgae provide hoto mongoose Error e
-  let statusCode = err.statusCode || 500;
-  let message = err.message || "Something went wrong global error";
+  let statusCode = 500;
+  let message = "Something went wrong global error";
   // this type is a array type, which each elements will be a obj
 
   //default errorSouces eita hobe tai let diye pore customize korte parbo..
@@ -49,6 +50,23 @@ const globalErrorHandler = (
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
+  } else if (err instanceof AppError) {
+    statusCode = err?.statusCode;
+    message = err?.message;
+    errorSources = [
+      {
+        path: "",
+        message: err?.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    message = err?.message;
+    errorSources = [
+      {
+        path: "",
+        message: err?.message,
+      },
+    ];
   }
   return res.status(statusCode).json({
     success: false,
