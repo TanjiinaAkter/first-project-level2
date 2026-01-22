@@ -2,7 +2,7 @@ import { create } from "domain";
 import { TAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemester } from "./academicSemester.model";
 import { academicSemesterNameCodeMapper } from "./academicSemester.constant";
-import AppError from "../../errors/AppErrors";
+import AppError from "../../errors/AppError";
 import status from "http-status";
 
 const createAcademicSemesterIntoDB = async (payLoad: TAcademicSemester) => {
@@ -18,7 +18,7 @@ const createAcademicSemesterIntoDB = async (payLoad: TAcademicSemester) => {
   // };
   // ekhane mapping object TAcademicSemesterCodeMapper theke amar req data payLoad.name jmn Autumn,Autumn er code ta mapping obj theke niye req code compare kortesi
   if (academicSemesterNameCodeMapper[payLoad.name] !== payLoad.code) {
-    throw new AppError(status.NOT_FOUND,"Invalid semester code");
+    throw new AppError(status.NOT_FOUND, "Invalid semester code");
   }
   const result = await AcademicSemester.create(payLoad);
   return result;
@@ -30,7 +30,7 @@ const getAllAcademicSemesterFromDB = async () => {
 const getASigleSemesterFromDB = async (semesterid: string) => {
   const result = await AcademicSemester.findById(semesterid);
   if (!result) {
-    throw new AppError(status.NOT_FOUND,"Semester id not found");
+    throw new AppError(status.NOT_FOUND, "Semester id not found");
   }
   return result;
 };
@@ -43,7 +43,7 @@ const updateASingleSemesterInDB = async (
     updatedDoc.code &&
     academicSemesterNameCodeMapper[updatedDoc.name] !== updatedDoc.code
   ) {
-    throw new AppError(status.NOT_FOUND,"Semester not found with this ID");
+    throw new AppError(status.NOT_FOUND, "Semester not found with this ID");
   }
   const result = await AcademicSemester.findByIdAndUpdate(
     // direct internally _id diye ber kore

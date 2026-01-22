@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 import { TAcademicDepertment } from "./academicDepartment.interface";
-import AppError from "../../errors/AppErrors";
+import AppError from "../../errors/AppError";
 import status from "http-status";
 import mongoose from "mongoose";
 const academicDepartmentSchema = new Schema<TAcademicDepertment>(
@@ -19,43 +19,21 @@ const academicDepartmentSchema = new Schema<TAcademicDepertment>(
 );
 // Checking if same department exists by name (before create department)
 
+academicDepartmentSchema.pre("save", async function (next) {
+  const isDepartmentNameExists = await AcademicDepartment.findOne({
+    name: this.name,
+  });
 
-
-
-
-
-
-// academicDepartmentSchema.pre("save", async function (next) {
-//   const isDepartmentNameExists = await AcademicDepartment.findOne({
-//     name: this.name,
-//   });
-
-//   if (isDepartmentNameExists) {
-//     throw new AppError(status.NOT_FOUND, "department is already exists");
-//   }
-//   next();
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  if (isDepartmentNameExists) {
+    throw new AppError(status.NOT_FOUND, "department is already exists");
+  }
+  next();
+});
 // Checking if department id doesn't exists (before updating a department)
 academicDepartmentSchema.pre("findOneAndUpdate", async function (next) {
   const query = this.getQuery();
-  console.log(query);
   let id = query._id;
+  console.log("update id finding by getQuery", id);
 
   //  Handle nested case
   if (id && typeof id === "object" && id._id) {

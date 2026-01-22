@@ -1,6 +1,6 @@
-import { ZodError } from "zod";
+import { ZodError, ZodIssue } from "zod";
 import { TErrorSource, TGenericErrorResponse } from "../interface/error";
-
+//TGenericErrorResponse deyar karon hocche এই machine থেকে সবসময় এই shape-এর data বের হবে
 const handleZodError = (err: ZodError): TGenericErrorResponse => {
   const statusCode = 400;
   //====================== zod e error.issues ta mainly

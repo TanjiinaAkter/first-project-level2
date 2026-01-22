@@ -98,6 +98,7 @@ export const updateStudentValidationSchema = z.object({
   // id: z.string().min(1, "ID is required"),
   // -------------- pre and save middleware use (4) pre middleware use korar jonno password add kore niyechi--------------//
   body: z.object({
+    // password dei nai karon alada route e niye password update korbo
     // password: z.string().max(20, "password is required"),
     student: z.object({
       name: updateUserNameValidationSchema.optional(),

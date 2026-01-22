@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 import { TStudent } from "./student.interface";
 import { Student } from "./student.model";
-import AppError from "../../errors/AppErrors";
+import AppError from "../../errors/AppError";
 import status from "http-status";
 import { User } from "../user/user.model";
+import { object } from "joi";
 // amader student interface niye ashlam student: Student diye , good practice for big projects
 // const createStudentIntoDB = async (studentData: TStudent) => {
 //   // ============================================//
@@ -32,9 +33,23 @@ import { User } from "../user/user.model";
 //   return result;
 //   // result return korle controller e chole jabe a
 // };
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find()
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  // raw searching
+  let searchTerm = "";
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string;
+  }
+
+  const result = await Student.find({
+    //MongoDB $or operator array of conditions নেয়। যেকোনো condition match হলে document return হবে।
+
+    $or: ["email", "name.firstName", "presentAddress"].map((field) => ({
+      // $regex =jeta match korte chai( এখানে email field-এ যে কোনো value যেটাতে "gmail.com" আছে, সেটা match হবে।), i=case-insensitive
+      [field]: { $regex: searchTerm, $options: "i" },
+    })),
+  })
     .populate("admissionSemester")
+    // ekhane academicDepartment er under a academic faculty so seta populate korte academicDepartment er path e jeye abar populate korbo... mane path mane inside a jabe
     .populate({
       path: "academicDepartment",
       populate: {
@@ -45,6 +60,7 @@ const getAllStudentsFromDB = async () => {
 };
 
 const getSingleStudentFromDB = async (id: string) => {
+  // findById ditam jodi mongoose er _id diye khujtam kintu amra ekhon custom id use kore kaj korbo tai findOne use korbo
   const result = await Student.findOne({ id })
     .populate("admissionSemester")
     .populate({
@@ -61,21 +77,23 @@ const getSingleStudentFromDB = async (id: string) => {
 // premitive and non -premitive
 const updateStudentFromDB = async (
   studentId: string,
+  // partial niyechi karon amra sob field update korbo na
   payLoad: Partial<TStudent>,
 ) => {
   // handle to update non premitive data.. specific properties to be extracted,remain will be kept under remainingStudentData
   const { name, guardian, localGuardian, ...remainingStudentData } = payLoad;
-  // new obj create kortesi jar moddhe only remainingStudentData er property thakbe ar Record<> er kaj hocche key gulo hobe string type ar value unknown
+  // new obj create kortesi jar moddhe only remainingStudentData er property thakbe ar Record<> er kaj hocche key gulo hobe string type ar value unknown..eta na korle hoyto error dite pare
   const modifiedUpdatedData: Record<string, unknown> = {
     ...remainingStudentData,
   };
+  // ekhane keys diye condition nicchi karon amra update korbo key like firstname k tai key=firstname ta lagbei
   if (name && Object.keys(name).length) {
+    //Object.entries() object-এর প্রতিটা key: value জোড়াকে একটা array বানায় → [key, value]
     for (const [key, value] of Object.entries(name)) {
       modifiedUpdatedData[`name.${key}`] = value;
     }
   }
 
-  console.log(modifiedUpdatedData);
   if (guardian && Object.keys(guardian).length) {
     for (const [key, value] of Object.entries(guardian)) {
       modifiedUpdatedData[`guardian.${key}`] = value;
@@ -91,6 +109,7 @@ const updateStudentFromDB = async (
     modifiedUpdatedData,
     {
       new: true,
+      // mongoose jeno arekbar validation k on kore dey
       runValidators: true,
     },
   );
@@ -103,8 +122,11 @@ const deleteStudentFromDB = async (id: string) => {
     session.startTransaction();
     // session-update...... amader custom id diye delete operation korbo tai findOneAndUpdate use hobe noyto updateOne dilei hoto
     const deletedStudent = await Student.findOneAndUpdate(
+      // kake update korchi
       { id },
+      // kon field update korchi
       { isDeleted: true },
+      // new updated data
       { new: true, session },
     );
     if (!deletedStudent) {

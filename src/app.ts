@@ -15,18 +15,20 @@ const app: Application = express();
 app.use(express.json());
 app.use(cors());
 
-//APPLICATION ROUTES
+//APPLICATION ROUTES --base route..... এর নিচে সব module route (routes>index.ts a ache) বসবে।
 app.use("/api/v1", router);
 // app.use("/api/v1/students", StudentRoutes);
 // app.use("/api/v1/users", UserRoutes);
 const test = async (req: Request, res: Response) => {
-  //  Promise.reject();
+  // Promise.reject();
+
   const a = 10;
   res.send(a);
 };
+
 app.get("/", test);
-//global error handler
+//global error handler middleware
 app.use(globalErrorHandler);
-// not found
+// not found middleware
 app.use(notFound);
 export default app;

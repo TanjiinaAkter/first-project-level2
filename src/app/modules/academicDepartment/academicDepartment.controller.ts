@@ -3,7 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { AcademicDepartmentServices } from "./academicDepartment.service";
 import { Error } from "mongoose";
-import AppError from "../../errors/AppErrors";
+import AppError from "../../errors/AppError";
 
 const createAcademicDepartment = catchAsync(async (req, res) => {
   const result =

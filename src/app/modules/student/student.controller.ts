@@ -63,7 +63,9 @@ import { catchAsync } from "../../utils/catchAsync";
 // GET ALL STUDENTS
 
 const getAllStudents = catchAsync(async (req, res, next) => {
-  const result = await StudentServices.getAllStudentsFromDB();
+  // search korar jonno mane searchTerm use kore students get korte req.query hobe
+ console.log(req.query);
+  const result = await StudentServices.getAllStudentsFromDB(req.query);
   sendResponse(res, {
     success: true,
     statusCode: status.OK,

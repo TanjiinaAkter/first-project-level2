@@ -1,11 +1,11 @@
 import { Error } from "mongoose";
-// amra Error er moddhe custom error AppError ke use kortesi
+// amra default vabe j new error throw kortam sei Error er moddhe custom error AppError ke use kortesi statusCode ar stack add kore
 class AppError extends Error {
   // custom stadtusCode property create kore nicchi jetay custom error er HTTP status rakhbe
   public statusCode: number;
   //contructor(mane gothon kora custom function ta maybe) er kaj hocche jokhn notun AppError cholbe tokhn ei ei property thakbe......... amader custom AppError er moddhe statusCode,message,stack thakbe
   constructor(statusCode: number, message: string, stack = "") {
-    // message ta amra Error er theke pawa msg ta use korbo
+    // message ta amra Error er theke pawa msg ta use kortesi mane parent theke message ashbe tai super dibo
     super(message);
     //custom stadtusCode aboshbe  present statusCode ta
     this.statusCode = statusCode;

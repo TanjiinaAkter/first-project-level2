@@ -1,4 +1,4 @@
-import AppError from "../../errors/AppErrors";
+import AppError from "../../errors/AppError";
 import { catchAsync } from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { AcademicFacultyServices } from "./academicFaculty.service";
@@ -26,7 +26,7 @@ const getAllAcademicFaculties = catchAsync(async (req, res) => {
 const getASingleAcademicFaculty = catchAsync(async (req, res) => {
   const { facultyId } = req.params;
   if (!facultyId) {
-    throw new AppError(status.NOT_FOUND,"Faculty ID is required");
+    throw new AppError(status.NOT_FOUND, "Faculty ID is required");
   }
   const result =
     await AcademicFacultyServices.getSingleAcademicFacultyFromDB(facultyId);
@@ -40,7 +40,7 @@ const getASingleAcademicFaculty = catchAsync(async (req, res) => {
 const updateAcademicFaculty = catchAsync(async (req, res) => {
   const { facultyId } = req.params;
   if (!facultyId) {
-    throw new AppError(status.NOT_FOUND,"Faculty ID is required");
+    throw new AppError(status.NOT_FOUND, "Faculty ID is required");
   }
   const result = await AcademicFacultyServices.updateAcademicFacultyFromDB(
     facultyId,

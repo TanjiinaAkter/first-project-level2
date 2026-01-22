@@ -6,6 +6,7 @@ import { AcademicDepartmentValidation } from "./academicDepartment.validation";
 const router = express.Router();
 router.post(
   "/create-academic-department",
+  // mongoose validation error check by commenting validateRequest
   validateRequest(
     AcademicDepartmentValidation.createAcademicDepartmentValidationSchema,
   ),

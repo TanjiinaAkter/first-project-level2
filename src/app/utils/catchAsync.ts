@@ -3,7 +3,7 @@ import { Request, Response, NextFunction, RequestHandler } from "express";
 // =======   HIGHER ORDER FUNCTION  ===========//
 export const catchAsync = (fn: RequestHandler) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    // Global error handler e jabe next(err)
+    // Global error handler e jabe next(err) , jodi only next() thakto tahole next middleware or route e jeto
     Promise.resolve(fn(req, res, next)).catch((err) => next(err));
   };
 };

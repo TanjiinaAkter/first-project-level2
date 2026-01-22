@@ -5,12 +5,14 @@ import mongoose from "mongoose";
 import app from "./app";
 import config from "./app/config";
 import { Server } from "http";
-// for uncaught rejection error handle
+// for unhandled rejection error handle
+// let server: Server;
 let server: Server;
 async function main() {
   try {
     await mongoose.connect(config.database_url as string);
-    // for uncaught rejection error handle server =
+    // for unhandled rejection error handle server =
+    //server =
     server = app.listen(config.port, () => {
       console.log(`Example app is listening on port ${config.port}`);
     });
@@ -19,7 +21,9 @@ async function main() {
   }
 }
 main();
+
 //unhandledRejection error handle
+//"unhandledRejection" এটা Node.js-এর built-in event।
 process.on("unhandledRejection", () => {
   console.log(`unhandled rejection is detected shutting down the server`);
   // polite vabe server off

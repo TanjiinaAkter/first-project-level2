@@ -6,7 +6,7 @@ import handleZodError from "../errors/handleZodError";
 import handleValidationError from "../errors/handleValidationError";
 import handleCastError from "../errors/handleCastError";
 import handleDuplicateError from "../errors/handleDuplicateError";
-import AppError from "../errors/AppErrors";
+import AppError from "../errors/AppError";
 
 const globalErrorHandler = (
   err: any,
@@ -16,11 +16,11 @@ const globalErrorHandler = (
 ) => {
   // setting default values ..status code pacchi amra AppError class theke custom create kore noyto only messgae provide hoto mongoose Error e
   let statusCode = 500;
-  let message = "Something went wrong global error";
+  let message = "Something went wrong in global error handler middleware";
   // this type is a array type, which each elements will be a obj
 
   //default errorSouces eita hobe tai let diye pore customize korte parbo..
-  // er kaj hocche zod/onnno validation er error gula dekhano
+  // er kaj hocche zod/onnno validation er error gula kothay hocche seta dekhano
   let errorSources: TErrorSource = [
     {
       path: "",
@@ -28,13 +28,13 @@ const globalErrorHandler = (
     },
   ];
 
-  // error ta jodi Zod theke ashe seta pete err instanceof use kortesi
+  // error ta jodi Zod theke ashe seta pete err JS er instanceof operator use kortesi, err ashche globalErrorHandler middleware er err theke
   if (err instanceof ZodError) {
-    // override kortesi zod error handle er jonno
+    // override kortesi zod error handle er jonno,simplified niyechi karon zodErrorHandle function ta niye ashtesi ar seta theke use hobe
     const simplifiedError = handleZodError(err);
     statusCode = simplifiedError?.statusCode;
-    ((message = simplifiedError?.message),
-      (errorSources = simplifiedError?.errorSources));
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
   } else if (err?.name === "ValidationError") {
     const simplifiedError = handleValidationError(err);
     statusCode = simplifiedError?.statusCode;
@@ -45,7 +45,9 @@ const globalErrorHandler = (
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
-  } else if (err?.code === 11000) {
+  }
+  // 11000 ta kono name thake na tai amra 11000 diye duplicate key error handle korbo
+  else if (err?.code === 11000) {
     const simplifiedError = handleDuplicateError(err);
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
@@ -60,6 +62,7 @@ const globalErrorHandler = (
       },
     ];
   } else if (err instanceof Error) {
+    // statusCode to nai Error er tai default ta jabe ekhane
     message = err?.message;
     errorSources = [
       {
@@ -71,7 +74,7 @@ const globalErrorHandler = (
   return res.status(statusCode).json({
     success: false,
     message,
-    err,
+    amiiierror: err,
     errorSources,
     stack: config.NODE_ENV === "development" ? err?.stack : null,
   });

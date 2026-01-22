@@ -5,7 +5,7 @@ import { TUser } from "./user.interface";
 import { User } from "./user.model";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { generateStudentId } from "./user.utils";
-import AppError from "../../errors/AppErrors";
+import AppError from "../../errors/AppError";
 import status from "http-status";
 import mongoose from "mongoose";
 
@@ -17,7 +17,7 @@ const createStudentIntoDB = async (password: string, payLoad: TStudent) => {
   // set student role because this function is for only create a new student
   userData.role = "student";
 
-  // find academic semester from the create student req and create id for student from that
+  // find admission semester from the AcademicSemester,create student req and create id for student from that
   const admissionSemester = await AcademicSemester.findById(
     payLoad.admissionSemester,
   );
@@ -51,10 +51,10 @@ const createStudentIntoDB = async (password: string, payLoad: TStudent) => {
     // end session
     await session.endSession();
     return newStudent;
-  } catch (error) {
+  } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new AppError(status.BAD_REQUEST, "Failed to create a userStudent");
+    throw new AppError(status.BAD_REQUEST, error.message);
   }
 };
 

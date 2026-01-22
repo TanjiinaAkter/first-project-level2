@@ -10,7 +10,7 @@ import {
   TUserName,
 } from "../student/student.interface";
 import config from "../../config/index";
-import AppError from "../../errors/AppErrors";
+import AppError from "../../errors/AppError";
 import status from "http-status";
 
 // Step 2: Create Schema
@@ -149,7 +149,6 @@ StudentSchema.virtual("fullName").get(function () {
 //   }
 //   next();
 // });
-
 
 // Step 3: Create Model
 // custom instance method -5 ekhnane amra StudentModel ta send korre dibo..bakita service.ts a kaj
