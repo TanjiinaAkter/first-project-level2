@@ -35,6 +35,11 @@ import { object } from "joi";
 // };
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   // raw searching
+  const studentsSearchableFields = [
+    "email",
+    "name.firstName",
+    "presentAddress",
+  ];
   let searchTerm = "";
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
@@ -43,7 +48,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   const result = await Student.find({
     //MongoDB $or operator array of conditions নেয়। যেকোনো condition match হলে document return হবে।
 
-    $or: ["email", "name.firstName", "presentAddress"].map((field) => ({
+    $or: studentsSearchableFields.map((field) => ({
       // $regex =jeta match korte chai( এখানে email field-এ যে কোনো value যেটাতে "gmail.com" আছে, সেটা match হবে।), i=case-insensitive
       [field]: { $regex: searchTerm, $options: "i" },
     })),
@@ -58,7 +63,6 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     });
   return result;
 };
-
 const getSingleStudentFromDB = async (id: string) => {
   // findById ditam jodi mongoose er _id diye khujtam kintu amra ekhon custom id use kore kaj korbo tai findOne use korbo
   const result = await Student.findOne({ id })
