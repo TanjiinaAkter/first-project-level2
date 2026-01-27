@@ -5,6 +5,7 @@ import AppError from "../../errors/AppError";
 import status from "http-status";
 import { User } from "../user/user.model";
 import { object } from "joi";
+import { de } from "zod/v4/locales";
 // amader student interface niye ashlam student: Student diye , good practice for big projects
 // const createStudentIntoDB = async (studentData: TStudent) => {
 //   // ============================================//
@@ -33,8 +34,9 @@ import { object } from "joi";
 //   return result;
 //   // result return korle controller e chole jabe a
 // };
+// ==== ekhane query is for ex:{ searchTerm: 'Dhanmondi' }
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  // raw searching
+  // kon fields diye search korte chai tar array
   const studentsSearchableFields = [
     "email",
     "name.firstName",
@@ -44,15 +46,27 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
   }
-
-  const result = await Student.find({
+  // RAW SEARCHING - using only searchTerm
+  const searchQuery = Student.find({
     //MongoDB $or operator array of conditions নেয়। যেকোনো condition match হলে document return হবে।
-
     $or: studentsSearchableFields.map((field) => ({
       // $regex =jeta match korte chai( এখানে email field-এ যে কোনো value যেটাতে "gmail.com" আছে, সেটা match হবে।), i=case-insensitive
+      //এখানে or এর জন্য এমন পেতে পারি ,so field এ আমরা যেটা search করবো ঐটা পাবো, মানে fieldname টা আসবে  [field]এখানে
+      // $or: [
+      //   { email: { $regex: "dhanmondi", $options: "i" } },
+      //   { "name.firstName": { $regex: "dhanmondi", $options: "i" } },
+      //   { presentAddress: { $regex: "dhanmondi", $options: "i" } }
+      // ]
       [field]: { $regex: searchTerm, $options: "i" },
     })),
-  })
+  });
+  const queryObj = { ...query };
+  const excludeFields = ["searchTerm", "sort", "limit"];
+  excludeFields.forEach((element) => delete queryObj[element]);
+  console.log(query, queryObj);
+  // FILTERING
+  const filterQuery = searchQuery
+    .find(queryObj)
     .populate("admissionSemester")
     // ekhane academicDepartment er under a academic faculty so seta populate korte academicDepartment er path e jeye abar populate korbo... mane path mane inside a jabe
     .populate({
@@ -61,7 +75,23 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
         path: "academicFaculty",
       },
     });
-  return result;
+
+  // SORT
+
+  // -createdAt মানে: নতুন ডাটা আগে দেখাবে,Mongoose-এ যদি schema-তে timestamps: true থাকে, তাহলে অটোমেটিক দুইটা field আসে:createdAt + updatedAt
+  let sort = "-createdAt";
+  if (query?.sort) {
+    sort = query?.sort as string;
+  }
+  const sortQuery = filterQuery.sort(sort);
+
+  // limiting
+  let limit = 1;
+  if (query?.limit) {
+    limit = Number(query?.limit);
+  }
+  const limitQuery = await sortQuery.limit(limit);
+  return limitQuery;
 };
 const getSingleStudentFromDB = async (id: string) => {
   // findById ditam jodi mongoose er _id diye khujtam kintu amra ekhon custom id use kore kaj korbo tai findOne use korbo
