@@ -61,10 +61,11 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     })),
   });
   const queryObj = { ...query };
-  const excludeFields = ["searchTerm", "sort", "page", "limit"];
+  const excludeFields = ["searchTerm", "sort", "limit", "page", "fields"];
   excludeFields.forEach((element) => delete queryObj[element]);
-  console.log(query, queryObj);
-  // FILTERING
+  console.log(query, "queryObj holo eita", queryObj);
+  // queryObj er value {} mane amra delete kore dyechi sob elements so only filter use hobe.
+  // FILTERING ==> exact match element dibe
   const filterQuery = searchQuery
     .find(queryObj)
     .populate("admissionSemester")
@@ -76,7 +77,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
       },
     });
 
-  // SORT
+  // SORT -
 
   // -createdAt মানে: নতুন ডাটা আগে দেখাবে,Mongoose-এ যদি schema-তে timestamps: true থাকে, তাহলে অটোমেটিক দুইটা field আসে:createdAt + updatedAt
   let sort = "-createdAt";
@@ -87,19 +88,32 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   // limiting
   let limit = 1;
+  // skip for pagination
   let skip = 0;
   if (query?.limit) {
     limit = Number(query?.limit);
   }
   // PAGINATION
+  // initially page 1 nmbr ta show hobe
   let page = 1;
   if (query?.page) {
     page = Number(query?.page);
+    // koyta element skip hobe setar formula
     skip = (page - 1) * limit;
   }
+  // pagination a skip()+limit() lage tai evabe niyechi, last e limit er kaj tai rekhechi
   const paginateQuery = sortQuery.skip(skip);
-  const limitQuery = await paginateQuery.limit(limit);
-  return limitQuery;
+  const limitQuery = paginateQuery.limit(limit);
+
+  // FIELD QUERY
+  //সব field দাও, কিন্তু __v দিও না(version dio na)
+  let fields = "-__v";
+  if (query?.fields) {
+    fields = (query?.fields as string).split(",").join(" ");
+    //console.log({fields});
+  }
+  const fieldQuery = await limitQuery.select(fields);
+  return fieldQuery;
 };
 const getSingleStudentFromDB = async (id: string) => {
   // findById ditam jodi mongoose er _id diye khujtam kintu amra ekhon custom id use kore kaj korbo tai findOne use korbo
